@@ -1031,7 +1031,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     // Hide loading overlay immediately - let app work without waiting for data
     elements.loadingOverlay.classList.add('hidden');
-    
+
+    // Ensure a fresh form state on initial load so previously selected
+    // values aren't persisted by the browser or saved data. This clears
+    // any pre-filled values before optionally restoring saved data.
+    elements.weekSelect.value = '';
+    elements.channelSelect.value = '';
+    elements.salesmanSelect.innerHTML = `<option value="" data-i18n="salesmanPlaceholder">${i18next.t('salesmanPlaceholder')}</option>`;
+    elements.customerSelect.innerHTML = `<option value="" data-i18n="customerPlaceholder">${i18next.t('customerPlaceholder')}</option>`;
+    updateProgress();
+
     // Load saved data
     loadSavedData();
     
