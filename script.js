@@ -248,24 +248,38 @@ window.clearSavedData = function() {
   localStorage.removeItem('preferredLanguage');
   console.log('All saved data cleared');
   showToast('Saved data cleared successfully', 'success');
+  location.reload(); // Reload to show language selection
 };
 window.clearFormDataOnly = function() {
   localStorage.removeItem('stockInTradeFormData');
   console.log('Form data cleared');
   showToast('Form data cleared successfully', 'success');
 };
+window.forceLanguageSelection = function() {
+  if (elements.languageSelectionOverlay) {
+    elements.languageSelectionOverlay.style.display = 'flex';
+    elements.languageSelectionOverlay.classList.remove('hidden');
+  }
+  if (elements.appContainer) {
+    elements.appContainer.style.display = 'none';
+  }
+  console.log('Language selection forced to show');
+};
 
 function initializeLanguageSelection() {
-  // Check if user has a saved language preference
-  const savedLanguage = localStorage.getItem('preferredLanguage');
-  
-  if (savedLanguage) {
-    // User has a preference, skip language selection
-    selectLanguage(savedLanguage);
-  } else {
-    // Show language selection overlay
+  // Always show language selection overlay on page load
+  if (elements.languageSelectionOverlay) {
     elements.languageSelectionOverlay.style.display = 'flex';
+  }
+  if (elements.appContainer) {
     elements.appContainer.style.display = 'none';
+  }
+  
+  // Check if user has a saved language preference for pre-selection
+  const savedLanguage = localStorage.getItem('preferredLanguage');
+  if (savedLanguage && elements.languageSwitcher) {
+    // Set the default language but still show the selection
+    i18next.changeLanguage(savedLanguage, updateTranslations);
   }
   
   // Add event listeners to language buttons
