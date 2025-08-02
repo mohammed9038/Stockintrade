@@ -11,7 +11,7 @@ function doPost(e) {
 
     entries.forEach(row => {
       sheet.appendRow([
-        new Date(),               // ⏰ Add timestamp here
+        new Date(),        // ⏰ Timestamp
         row.week,
         row.channel,
         row.salesman,
@@ -23,15 +23,21 @@ function doPost(e) {
       ]);
     });
 
-      return ContentService
-        .createTextOutput(JSON.stringify({ status: "success" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    } catch (err) {
-      return ContentService
-        .createTextOutput(
-          JSON.stringify({ status: "error", message: err.message })
-        )
-        .setMimeType(ContentService.MimeType.JSON);
-    }
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService
+      .createTextOutput(
+        JSON.stringify({ status: "error", message: err.message })
+      )
+      .setMimeType(ContentService.MimeType.JSON);
   }
+}
 
+// ✅ Add this doGet so deployment as Web App doesn't fail
+function doGet() {
+  return ContentService
+    .createTextOutput("GET request received. Web App is live.")
+    .setMimeType(ContentService.MimeType.TEXT);
+}
