@@ -994,8 +994,12 @@ async function confirmSubmit() {
       result = await response.json();
     } else {
       const text = await response.text();
-      console.error("Unexpected response: ", text);
-      throw new Error("Invalid response from server");
+      try {
+        result = JSON.parse(text);
+      } catch (e) {
+        console.error("Unexpected response: ", text);
+        throw new Error("Invalid response from server");
+      }
     }
 
     if (result.status !== "success") {
