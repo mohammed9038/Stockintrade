@@ -15,6 +15,8 @@ const appState = {
 
 // DOM Elements
 const elements = {
+  languageSelectionOverlay: document.getElementById('languageSelectionOverlay'),
+  appContainer: document.getElementById('appContainer'),
   loadingOverlay: document.getElementById('loadingOverlay'),
   progressFill: document.getElementById('progressFill'),
   weekSelect: document.getElementById('week'),
@@ -197,6 +199,73 @@ function updateTranslations() {
   document.documentElement.lang = i18next.language;
 }
 
+// Language Selection Functions
+function selectLanguage(languageCode) {
+  // Save language preference
+  localStorage.setItem('preferredLanguage', languageCode);
+  
+  // Change language
+  i18next.changeLanguage(languageCode, () => {
+    updateTranslations();
+    
+    // Update header language switcher to match selection
+    if (elements.languageSwitcher) {
+      elements.languageSwitcher.value = languageCode;
+    }
+    
+    // Hide language selection overlay
+    if (elements.languageSelectionOverlay) {
+      elements.languageSelectionOverlay.classList.add('hidden');
+    }
+    
+    // Show main app container
+    setTimeout(() => {
+      if (elements.appContainer) {
+        elements.appContainer.style.display = 'block';
+      }
+      if (elements.languageSelectionOverlay) {
+        elements.languageSelectionOverlay.style.display = 'none';
+      }
+    }, 300);
+  });
+}
+
+function showLanguageSelection() {
+  // Show language selection overlay again
+  if (elements.languageSelectionOverlay) {
+    elements.languageSelectionOverlay.style.display = 'flex';
+    elements.languageSelectionOverlay.classList.remove('hidden');
+  }
+  if (elements.appContainer) {
+    elements.appContainer.style.display = 'none';
+  }
+}
+
+// Export function to window for testing/debugging
+window.showLanguageSelection = showLanguageSelection;
+
+function initializeLanguageSelection() {
+  // Check if user has a saved language preference
+  const savedLanguage = localStorage.getItem('preferredLanguage');
+  
+  if (savedLanguage) {
+    // User has a preference, skip language selection
+    selectLanguage(savedLanguage);
+  } else {
+    // Show language selection overlay
+    elements.languageSelectionOverlay.style.display = 'flex';
+    elements.appContainer.style.display = 'none';
+  }
+  
+  // Add event listeners to language buttons
+  document.querySelectorAll('.language-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const selectedLang = btn.getAttribute('data-lang');
+      selectLanguage(selectedLang);
+    });
+  });
+}
+
 i18next.init({
   lng: 'en',
   resources
@@ -205,11 +274,17 @@ i18next.init({
     console.error('i18next init error:', err);
   }
   updateTranslations();
+  
+  // Initialize language selection after i18next is ready
+  initializeLanguageSelection();
 });
 
-elements.languageSwitcher.addEventListener('change', e => {
-  i18next.changeLanguage(e.target.value, updateTranslations);
-});
+// Keep the header language switcher for users who want to change language later
+if (elements.languageSwitcher) {
+  elements.languageSwitcher.addEventListener('change', e => {
+    selectLanguage(e.target.value);
+  });
+}
 
 // Utility Functions
 const debounce = (func, delay) => {
@@ -1046,7 +1121,9 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     // Hide loading overlay immediately - let app work without waiting for data
-    elements.loadingOverlay.classList.add('hidden');
+    if (elements.loadingOverlay) {
+      elements.loadingOverlay.classList.add('hidden');
+    }
 
     // Ensure a fresh form state on initial load so previously selected
     // values aren't persisted by the browser or saved data. This clears

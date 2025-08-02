@@ -13,6 +13,36 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <!-- Language Selection Overlay -->
+  <div id="languageSelectionOverlay" class="language-selection-overlay">
+    <div class="language-selection-container">
+      <div class="language-selection-header">
+        <img src="https://i.imgur.com/J2WFvE2.png" alt="Company Logo" class="logo-large">
+        <h1>Stock In Trade</h1>
+        <p>Inventory Management System</p>
+      </div>
+      <div class="language-selection-content">
+        <h2>Select Language / اختر اللغة</h2>
+        <div class="language-options">
+          <button class="language-btn" data-lang="en">
+            <div class="language-flag">🇺🇸</div>
+            <div class="language-text">
+              <span class="language-name">English</span>
+              <span class="language-desc">Continue in English</span>
+            </div>
+          </button>
+          <button class="language-btn" data-lang="ar">
+            <div class="language-flag">🇸🇦</div>
+            <div class="language-text">
+              <span class="language-name">العربية</span>
+              <span class="language-desc">متابعة باللغة العربية</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="loading-overlay">
       <div class="loading-spinner">
@@ -22,7 +52,7 @@
   </div>
 
   <!-- Main Container -->
-  <div class="app-container">
+  <div class="app-container" id="appContainer" style="display: none;">
     <!-- Header -->
     <header class="app-header">
       <div class="header-content">
