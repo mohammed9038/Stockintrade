@@ -241,20 +241,50 @@ function showLanguageSelection() {
   }
 }
 
-// Export function to window for testing/debugging
+// Export functions to window for testing/debugging
 window.showLanguageSelection = showLanguageSelection;
+window.clearLanguagePreference = () => {
+  localStorage.removeItem('preferredLanguage');
+  console.log('Language preference cleared');
+  location.reload();
+};
 
 function initializeLanguageSelection() {
   // Check if user has a saved language preference
   const savedLanguage = localStorage.getItem('preferredLanguage');
   
-  if (savedLanguage) {
-    // User has a preference, skip language selection
-    selectLanguage(savedLanguage);
+  console.log('Checking saved language:', savedLanguage); // Debug log
+  
+  if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ar')) {
+    // User has a valid preference, skip language selection and show app directly
+    console.log('Using saved language:', savedLanguage);
+    
+    // Hide language selection immediately
+    if (elements.languageSelectionOverlay) {
+      elements.languageSelectionOverlay.style.display = 'none';
+    }
+    
+    // Show app container immediately
+    if (elements.appContainer) {
+      elements.appContainer.style.display = 'block';
+    }
+    
+    // Set the language without animation
+    i18next.changeLanguage(savedLanguage, () => {
+      updateTranslations();
+      if (elements.languageSwitcher) {
+        elements.languageSwitcher.value = savedLanguage;
+      }
+    });
   } else {
-    // Show language selection overlay
-    elements.languageSelectionOverlay.style.display = 'flex';
-    elements.appContainer.style.display = 'none';
+    // No valid preference, show language selection
+    console.log('No saved language, showing selection');
+    if (elements.languageSelectionOverlay) {
+      elements.languageSelectionOverlay.style.display = 'flex';
+    }
+    if (elements.appContainer) {
+      elements.appContainer.style.display = 'none';
+    }
   }
   
   // Add event listeners to language buttons
@@ -275,8 +305,12 @@ i18next.init({
   }
   updateTranslations();
   
-  // Initialize language selection after i18next is ready
-  initializeLanguageSelection();
+  // Initialize language selection after i18next is ready and DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeLanguageSelection);
+  } else {
+    initializeLanguageSelection();
+  }
 });
 
 // Keep the header language switcher for users who want to change language later
