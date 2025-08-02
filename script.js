@@ -243,48 +243,29 @@ function showLanguageSelection() {
 
 // Export functions to window for testing/debugging
 window.showLanguageSelection = showLanguageSelection;
-window.clearLanguagePreference = () => {
+window.clearSavedData = function() {
+  localStorage.removeItem('stockInTradeFormData');
   localStorage.removeItem('preferredLanguage');
-  console.log('Language preference cleared');
-  location.reload();
+  console.log('All saved data cleared');
+  showToast('Saved data cleared successfully', 'success');
+};
+window.clearFormDataOnly = function() {
+  localStorage.removeItem('stockInTradeFormData');
+  console.log('Form data cleared');
+  showToast('Form data cleared successfully', 'success');
 };
 
 function initializeLanguageSelection() {
   // Check if user has a saved language preference
   const savedLanguage = localStorage.getItem('preferredLanguage');
   
-  console.log('Checking saved language:', savedLanguage); // Debug log
-  
-  if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ar')) {
-    // User has a valid preference, skip language selection and show app directly
-    console.log('Using saved language:', savedLanguage);
-    
-    // Hide language selection immediately
-    if (elements.languageSelectionOverlay) {
-      elements.languageSelectionOverlay.style.display = 'none';
-    }
-    
-    // Show app container immediately
-    if (elements.appContainer) {
-      elements.appContainer.style.display = 'block';
-    }
-    
-    // Set the language without animation
-    i18next.changeLanguage(savedLanguage, () => {
-      updateTranslations();
-      if (elements.languageSwitcher) {
-        elements.languageSwitcher.value = savedLanguage;
-      }
-    });
+  if (savedLanguage) {
+    // User has a preference, skip language selection
+    selectLanguage(savedLanguage);
   } else {
-    // No valid preference, show language selection
-    console.log('No saved language, showing selection');
-    if (elements.languageSelectionOverlay) {
-      elements.languageSelectionOverlay.style.display = 'flex';
-    }
-    if (elements.appContainer) {
-      elements.appContainer.style.display = 'none';
-    }
+    // Show language selection overlay
+    elements.languageSelectionOverlay.style.display = 'flex';
+    elements.appContainer.style.display = 'none';
   }
   
   // Add event listeners to language buttons
@@ -305,12 +286,8 @@ i18next.init({
   }
   updateTranslations();
   
-  // Initialize language selection after i18next is ready and DOM is loaded
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeLanguageSelection);
-  } else {
-    initializeLanguageSelection();
-  }
+  // Initialize language selection after i18next is ready
+  initializeLanguageSelection();
 });
 
 // Keep the header language switcher for users who want to change language later
@@ -472,16 +449,26 @@ function validateForm() {
 
 // Auto-save functionality
 function autoSave() {
-  const formData = {
-    week: elements.weekSelect.value,
-    channel: elements.channelSelect.value,
-    salesman: elements.salesmanSelect.value,
-    customer: elements.customerSelect.value,
-    products: appState.productQuantities,
-    timestamp: Date.now()
-  };
+  // Only auto-save if there's meaningful data to save
+  const hasFormData = elements.weekSelect.value || elements.channelSelect.value || 
+                     elements.salesmanSelect.value || elements.customerSelect.value;
+  const hasProductData = Object.keys(appState.productQuantities).some(key => 
+    appState.productQuantities[key] && 
+    (appState.productQuantities[key].qty > 0 || appState.productQuantities[key].sellout > 0)
+  );
   
-  localStorage.setItem('stockInTradeFormData', JSON.stringify(formData));
+  if (hasFormData || hasProductData) {
+    const formData = {
+      week: elements.weekSelect.value,
+      channel: elements.channelSelect.value,
+      salesman: elements.salesmanSelect.value,
+      customer: elements.customerSelect.value,
+      products: appState.productQuantities,
+      timestamp: Date.now()
+    };
+    
+    localStorage.setItem('stockInTradeFormData', JSON.stringify(formData));
+  }
 }
 
 function loadSavedData() {
@@ -490,9 +477,15 @@ function loadSavedData() {
     if (savedData) {
       const data = JSON.parse(savedData);
       
-      // Check if data is recent (within 24 hours)
+      // Check if data is recent (within 24 hours) AND has meaningful content
       const hoursAgo = (Date.now() - data.timestamp) / (1000 * 60 * 60);
-      if (hoursAgo < 24) {
+      const hasFormData = data.week || data.channel || data.salesman || data.customer;
+      const hasProductData = data.products && Object.keys(data.products).some(key => 
+        data.products[key] && (data.products[key].qty > 0 || data.products[key].sellout > 0)
+      );
+      
+      // Only prompt if data is recent AND contains meaningful information
+      if (hoursAgo < 24 && (hasFormData || hasProductData)) {
         if (confirm(i18next.t('restoreConfirm'))) {
           elements.weekSelect.value = data.week || '';
           elements.channelSelect.value = data.channel || '';
@@ -504,10 +497,15 @@ function loadSavedData() {
           updateProgress();
           showToast(i18next.t('dataRestored'), 'success');
         }
+      } else if (hoursAgo >= 24) {
+        // Clear old saved data
+        localStorage.removeItem('stockInTradeFormData');
       }
     }
   } catch (error) {
     console.error('Error loading saved data:', error);
+    // Clear corrupted saved data
+    localStorage.removeItem('stockInTradeFormData');
   }
 }
 
