@@ -25,13 +25,13 @@ function doPost(e) {
 
       return ContentService
         .createTextOutput(JSON.stringify({ status: "success" }))
-        .setMimeType(ContentService.MimeType.JSON)
-        .setHeader("Access-Control-Allow-Origin", "*");
+        .setMimeType(ContentService.MimeType.JSON);
     } catch (err) {
       return ContentService
-        .createTextOutput(JSON.stringify({ status: "error", message: err.message }))
-        .setMimeType(ContentService.MimeType.JSON)
-        .setHeader("Access-Control-Allow-Origin", "*");
+        .createTextOutput(
+          JSON.stringify({ status: "error", message: err.message })
+        )
+        .setMimeType(ContentService.MimeType.JSON);
     }
   }
 
