@@ -988,7 +988,16 @@ async function confirmSubmit() {
       throw new Error(`HTTP ${response.status}`);
     }
 
-    const result = await response.json();
+    const contentType = response.headers.get("content-type") || "";
+    let result;
+    if (contentType.includes("application/json")) {
+      result = await response.json();
+    } else {
+      const text = await response.text();
+      console.error("Unexpected response: ", text);
+      throw new Error("Invalid response from server");
+    }
+
     if (result.status !== "success") {
       throw new Error(result.message || "Unknown error");
     }
