@@ -27,8 +27,184 @@ const elements = {
   previewBtn: document.getElementById('previewBtn'),
   toastContainer: document.getElementById('toastContainer'),
   confirmationModal: document.getElementById('confirmationModal'),
-  previewModal: document.getElementById('previewModal')
+  previewModal: document.getElementById('previewModal'),
+  languageSwitcher: document.getElementById('languageSwitcher')
 };
+
+// Translation resources
+const resources = {
+  en: {
+    translation: {
+      title: "Stock In Trade",
+      subtitle: "Inventory Management System",
+      week: "Week",
+      channel: "Channel",
+      salesman: "Salesman",
+      customer: "Customer",
+      products: "Products",
+      orderDetails: "Order Details",
+      selectWeek: "Select Week",
+      selectChannel: "Select Channel",
+      selectSalesman: "Select Salesman",
+      selectCustomer: "Select Customer",
+      weekPlaceholder: "-- Select Week --",
+      week1: "Week 1",
+      week2: "Week 2",
+      week3: "Week 3",
+      week4: "Week 4",
+      channelPlaceholder: "-- Select Channel --",
+      salesmanPlaceholder: "-- Select Salesman --",
+      customerPlaceholder: "-- Select Customer --",
+      productInventory: "Product Inventory",
+      expandAll: "Expand All",
+      collapseAll: "Collapse All",
+      orderSummary: "Order Summary",
+      productsStat: "Products",
+      totalQty: "Total Qty",
+      selloutQty: "Sellout Qty",
+      submitOrder: "Submit Order",
+      preview: "Preview",
+      reset: "Reset",
+      confirmSubmission: "Confirm Submission",
+      confirmQuestion: "Are you sure you want to submit this order?",
+      cancel: "Cancel",
+      confirmSubmit: "Confirm Submit",
+      orderPreview: "Order Preview",
+      close: "Close",
+      appLoaded: "Application loaded successfully",
+      validationError: "Please complete all required fields",
+      validationTitle: "Validation Error",
+      noProducts: "Please enter at least one product quantity or sellout quantity",
+      noProductsTitle: "No Products",
+      noProductsPreview: "No products selected for preview",
+      submitSuccess: "Order submitted successfully!",
+      success: "Success",
+      submitFailed: "Submission failed",
+      submissionError: "Submission Error",
+      initError: "Failed to initialize application. Please refresh the page.",
+      initErrorTitle: "Initialization Error",
+      formReset: "Form reset successfully",
+      resetConfirm: "Are you sure you want to reset the form? All data will be lost.",
+      submitting: "Submitting...",
+      loadingData: "Loading inventory data...",
+      orderDetailsHeader: "Order Details",
+      weekLabel: "Week:",
+      channelLabel: "Channel:",
+      salesmanLabel: "Salesman:",
+      customerLabel: "Customer:",
+      productCol: "Product",
+      quantityCol: "Quantity",
+      selloutCol: "Sellout",
+      dataRestored: "Form data restored successfully",
+      restoreConfirm: "Found saved form data. Would you like to restore it?",
+      loadingWarning: "Google Sheets loading slowly. Using cached data if available.",
+      usingCachedData: "Using cached data",
+      loadingWarningTitle: "Loading Warning",
+      loadingError: "Failed to load product data. Please refresh the page.",
+      loadingErrorTitle: "Loading Error",
+      failedProducts: "Failed to load products. Please refresh the page.",
+      retry: "Retry"
+    }
+  },
+  ar: {
+    translation: {
+      title: "المخزون التجاري",
+      subtitle: "نظام إدارة المخزون",
+      week: "الأسبوع",
+      channel: "القناة",
+      salesman: "مندوب المبيعات",
+      customer: "العميل",
+      products: "المنتجات",
+      orderDetails: "تفاصيل الطلب",
+      selectWeek: "اختر الأسبوع",
+      selectChannel: "اختر القناة",
+      selectSalesman: "اختر مندوب المبيعات",
+      selectCustomer: "اختر العميل",
+      weekPlaceholder: "-- اختر الأسبوع --",
+      week1: "الأسبوع 1",
+      week2: "الأسبوع 2",
+      week3: "الأسبوع 3",
+      week4: "الأسبوع 4",
+      channelPlaceholder: "-- اختر القناة --",
+      salesmanPlaceholder: "-- اختر مندوب المبيعات --",
+      customerPlaceholder: "-- اختر العميل --",
+      productInventory: "جرد المنتجات",
+      expandAll: "توسيع الكل",
+      collapseAll: "طي الكل",
+      orderSummary: "ملخص الطلب",
+      productsStat: "المنتجات",
+      totalQty: "الكمية الإجمالية",
+      selloutQty: "كمية المبيع",
+      submitOrder: "إرسال الطلب",
+      preview: "معاينة",
+      reset: "إعادة تعيين",
+      confirmSubmission: "تأكيد الإرسال",
+      confirmQuestion: "هل أنت متأكد أنك تريد إرسال هذا الطلب؟",
+      cancel: "إلغاء",
+      confirmSubmit: "تأكيد الإرسال",
+      orderPreview: "معاينة الطلب",
+      close: "إغلاق",
+      appLoaded: "تم تحميل التطبيق بنجاح",
+      validationError: "يرجى إكمال جميع الحقول المطلوبة",
+      validationTitle: "خطأ في التحقق",
+      noProducts: "يرجى إدخال كمية منتج واحدة على الأقل أو كمية المبيعات",
+      noProductsTitle: "لا توجد منتجات",
+      noProductsPreview: "لم يتم اختيار منتجات للمعاينة",
+      submitSuccess: "تم إرسال الطلب بنجاح!",
+      success: "نجاح",
+      submitFailed: "فشل الإرسال",
+      submissionError: "خطأ في الإرسال",
+      initError: "فشل في تهيئة التطبيق. يرجى تحديث الصفحة.",
+      initErrorTitle: "خطأ في التهيئة",
+      formReset: "تمت إعادة تعيين النموذج بنجاح",
+      resetConfirm: "هل أنت متأكد أنك تريد إعادة تعيين النموذج؟ ستفقد جميع البيانات.",
+      submitting: "جاري الإرسال...",
+      loadingData: "جاري تحميل بيانات المخزون...",
+      orderDetailsHeader: "تفاصيل الطلب",
+      weekLabel: "الأسبوع:",
+      channelLabel: "القناة:",
+      salesmanLabel: "مندوب المبيعات:",
+      customerLabel: "العميل:",
+      productCol: "المنتج",
+      quantityCol: "الكمية",
+      selloutCol: "المبيعات",
+      dataRestored: "تمت استعادة بيانات النموذج بنجاح",
+      restoreConfirm: "تم العثور على بيانات محفوظة للنموذج. هل ترغب في استعادتها؟",
+      loadingWarning: "يتم تحميل جداول Google ببطء. سيتم استخدام البيانات المخزنة إذا كانت متاحة.",
+      usingCachedData: "يتم استخدام البيانات المخزنة مؤقتًا",
+      loadingWarningTitle: "تحذير التحميل",
+      loadingError: "فشل في تحميل بيانات المنتج. يرجى تحديث الصفحة.",
+      loadingErrorTitle: "خطأ في التحميل",
+      failedProducts: "فشل تحميل المنتجات. يرجى تحديث الصفحة.",
+      retry: "إعادة المحاولة"
+    }
+  }
+};
+
+function updateTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (i18next.exists(key)) {
+      el.textContent = i18next.t(key);
+    }
+  });
+  document.documentElement.dir = i18next.language === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = i18next.language;
+}
+
+i18next.init({
+  lng: 'en',
+  resources
+}, err => {
+  if (err) {
+    console.error('i18next init error:', err);
+  }
+  updateTranslations();
+});
+
+elements.languageSwitcher.addEventListener('change', e => {
+  i18next.changeLanguage(e.target.value, updateTranslations);
+});
 
 // Utility Functions
 const debounce = (func, delay) => {
@@ -203,7 +379,7 @@ function loadSavedData() {
       // Check if data is recent (within 24 hours)
       const hoursAgo = (Date.now() - data.timestamp) / (1000 * 60 * 60);
       if (hoursAgo < 24) {
-        if (confirm('Found saved form data. Would you like to restore it?')) {
+        if (confirm(i18next.t('restoreConfirm'))) {
           elements.weekSelect.value = data.week || '';
           elements.channelSelect.value = data.channel || '';
           elements.salesmanSelect.value = data.salesman || '';
@@ -212,7 +388,7 @@ function loadSavedData() {
           
           // Update UI
           updateProgress();
-          showToast('Form data restored successfully', 'success');
+          showToast(i18next.t('dataRestored'), 'success');
         }
       }
     }
@@ -275,8 +451,9 @@ async function loadDropdowns() {
     
     // Load channels
     const channels = [...new Set(data.map(r => r.Channel))].filter(Boolean);
-    elements.channelSelect.innerHTML = '<option value="">-- Select Channel --</option>' + 
+    elements.channelSelect.innerHTML = `<option value="" data-i18n="channelPlaceholder">${i18next.t('channelPlaceholder')}</option>` +
       channels.map(c => `<option value="${c}">${c}</option>`).join("");
+    updateTranslations();
     
     hideLoadingIndicator('channel');
     
@@ -290,15 +467,17 @@ async function loadDropdowns() {
         const salesmen = data.filter(r => r.Channel === selectedChannel).map(r => r["Salesman Name"]);
         const uniqueSalesmen = [...new Set(salesmen)].filter(Boolean);
         
-        elements.salesmanSelect.innerHTML = '<option value="">-- Select Salesman --</option>' + 
+        elements.salesmanSelect.innerHTML = `<option value="" data-i18n="salesmanPlaceholder">${i18next.t('salesmanPlaceholder')}</option>` +
           uniqueSalesmen.map(s => `<option value="${s}">${s}</option>`).join("");
-        elements.customerSelect.innerHTML = '<option value="">-- Select Customer --</option>';
+        elements.customerSelect.innerHTML = `<option value="" data-i18n="customerPlaceholder">${i18next.t('customerPlaceholder')}</option>`;
+        updateTranslations();
         
         hideLoadingIndicator('salesman');
         validateField('channel', selectedChannel);
       } else {
-        elements.salesmanSelect.innerHTML = '<option value="">-- Select Salesman --</option>';
-        elements.customerSelect.innerHTML = '<option value="">-- Select Customer --</option>';
+        elements.salesmanSelect.innerHTML = `<option value="" data-i18n="salesmanPlaceholder">${i18next.t('salesmanPlaceholder')}</option>`;
+        elements.customerSelect.innerHTML = `<option value="" data-i18n="customerPlaceholder">${i18next.t('customerPlaceholder')}</option>`;
+        updateTranslations();
       }
       
       updateProgress();
@@ -315,13 +494,15 @@ async function loadDropdowns() {
         const customers = data.filter(r => r["Salesman Name"] === selectedSalesman).map(r => r["Customer Name"]);
         const uniqueCustomers = [...new Set(customers)].filter(Boolean);
         
-        elements.customerSelect.innerHTML = '<option value="">-- Select Customer --</option>' + 
+        elements.customerSelect.innerHTML = `<option value="" data-i18n="customerPlaceholder">${i18next.t('customerPlaceholder')}</option>` +
           uniqueCustomers.map(c => `<option value="${c}">${c}</option>`).join("");
+        updateTranslations();
         
         hideLoadingIndicator('customer');
         validateField('salesman', selectedSalesman);
       } else {
-        elements.customerSelect.innerHTML = '<option value="">-- Select Customer --</option>';
+        elements.customerSelect.innerHTML = `<option value="" data-i18n="customerPlaceholder">${i18next.t('customerPlaceholder')}</option>`;
+        updateTranslations();
       }
       
       updateProgress();
@@ -359,7 +540,7 @@ async function loadDropdowns() {
     
   } catch (error) {
     console.error('Error loading dropdowns:', error);
-    showToast('Google Sheets loading slowly. Using cached data if available.', 'warning', 'Loading Warning');
+    showToast(i18next.t('loadingWarning'), 'warning', i18next.t('loadingWarningTitle'));
     hideLoadingIndicator('channel');
     
     // Try to use cached data from localStorage
@@ -368,9 +549,10 @@ async function loadDropdowns() {
       try {
         const data = JSON.parse(cachedData);
         const channels = [...new Set(data.map(r => r.Channel))].filter(Boolean);
-        elements.channelSelect.innerHTML = '<option value="">-- Select Channel --</option>' + 
+        elements.channelSelect.innerHTML = `<option value="" data-i18n="channelPlaceholder">${i18next.t('channelPlaceholder')}</option>` +
           channels.map(c => `<option value="${c}">${c}</option>`).join("");
-        showToast('Using cached data', 'info');
+        updateTranslations();
+        showToast(i18next.t('usingCachedData'), 'info');
       } catch (e) {
         console.error('Error parsing cached data:', e);
       }
@@ -451,14 +633,14 @@ async function loadProducts() {
     
   } catch (error) {
     console.error('Error loading products:', error);
-    showToast('Failed to load product data. Please refresh the page.', 'error', 'Loading Error');
+    showToast(i18next.t('loadingError'), 'error', i18next.t('loadingErrorTitle'));
     elements.productsContainer.innerHTML = `
       <div class="error-state">
         <i class="fas fa-exclamation-triangle"></i>
-        <p>Failed to load products. Please refresh the page.</p>
+        <p>${i18next.t('failedProducts')}</p>
         <button class="btn btn-primary" onclick="loadProducts()">
           <i class="fas fa-refresh"></i>
-          Retry
+          ${i18next.t('retry')}
         </button>
       </div>
     `;
@@ -625,34 +807,40 @@ function collapseAll() {
   });
 }
 
-function resetForm() {
-  if (confirm('Are you sure you want to reset the form? All data will be lost.')) {
-    // Reset form fields
-    elements.weekSelect.value = '';
-    elements.channelSelect.value = '';
-    elements.salesmanSelect.innerHTML = '<option value="">-- Select Salesman --</option>';
-    elements.customerSelect.innerHTML = '<option value="">-- Select Customer --</option>';
-    
-    // Reset product quantities
-    appState.productQuantities = {};
-    
-    // Reset product inputs
-    document.querySelectorAll('.product-input').forEach(input => {
-      input.value = '';
-    });
-    
-    // Remove visual states
-    document.querySelectorAll('.product.has-quantity').forEach(product => {
-      product.classList.remove('has-quantity');
-    });
-    
-    // Clear saved data
-    localStorage.removeItem('stockInTradeFormData');
-    
-    // Update UI
-    updateProgress();
-    showToast('Form reset successfully', 'success');
+function resetForm(confirmReset = true) {
+  if (confirmReset) {
+    const proceed = confirm(i18next.t('resetConfirm'));
+    if (!proceed) {
+      return;
+    }
   }
+
+  // Reset form fields
+  elements.weekSelect.value = '';
+  elements.channelSelect.value = '';
+  elements.salesmanSelect.innerHTML = `<option value="" data-i18n="salesmanPlaceholder">${i18next.t('salesmanPlaceholder')}</option>`;
+  elements.customerSelect.innerHTML = `<option value="" data-i18n="customerPlaceholder">${i18next.t('customerPlaceholder')}</option>`;
+  updateTranslations();
+
+  // Reset product quantities
+  appState.productQuantities = {};
+
+  // Reset product inputs
+  document.querySelectorAll('.product-input').forEach(input => {
+    input.value = '';
+  });
+
+  // Remove visual states
+  document.querySelectorAll('.product.has-quantity').forEach(product => {
+    product.classList.remove('has-quantity');
+  });
+
+  // Clear saved data
+  localStorage.removeItem('stockInTradeFormData');
+
+  // Update UI
+  updateProgress();
+  showToast(i18next.t('formReset'), 'success');
 }
 
 // Preview Functions
@@ -660,31 +848,31 @@ function previewOrder() {
   const orderData = collectOrderData();
   
   if (orderData.length === 0) {
-    showToast('No products selected for preview', 'warning');
+    showToast(i18next.t('noProductsPreview'), 'warning');
     return;
   }
   
   const previewContent = document.getElementById('previewContent');
   previewContent.innerHTML = `
     <div class="preview-header">
-      <h4>Order Details</h4>
+      <h4>${i18next.t('orderDetailsHeader')}</h4>
       <div class="preview-info">
-        <p><strong>Week:</strong> ${elements.weekSelect.value}</p>
-        <p><strong>Channel:</strong> ${elements.channelSelect.value}</p>
-        <p><strong>Salesman:</strong> ${elements.salesmanSelect.value}</p>
-        <p><strong>Customer:</strong> ${elements.customerSelect.value}</p>
+        <p><strong>${i18next.t('weekLabel')}</strong> ${elements.weekSelect.value}</p>
+        <p><strong>${i18next.t('channelLabel')}</strong> ${elements.channelSelect.value}</p>
+        <p><strong>${i18next.t('salesmanLabel')}</strong> ${elements.salesmanSelect.value}</p>
+        <p><strong>${i18next.t('customerLabel')}</strong> ${elements.customerSelect.value}</p>
       </div>
     </div>
-    
+
     <div class="preview-products">
-      <h4>Products (${orderData.length})</h4>
+      <h4>${i18next.t('products')} (${orderData.length})</h4>
       <div class="preview-table">
         <table>
           <thead>
             <tr>
-              <th>Product</th>
-              <th>Quantity</th>
-              <th>Sellout</th>
+              <th>${i18next.t('productCol')}</th>
+              <th>${i18next.t('quantityCol')}</th>
+              <th>${i18next.t('selloutCol')}</th>
             </tr>
           </thead>
           <tbody>
@@ -745,29 +933,29 @@ function collectOrderData() {
 
 function submitForm() {
   if (!validateForm()) {
-    showToast('Please complete all required fields', 'error', 'Validation Error');
+    showToast(i18next.t('validationError'), 'error', i18next.t('validationTitle'));
     return;
   }
   
   const orderData = collectOrderData();
   
   if (orderData.length === 0) {
-    showToast('Please enter at least one product quantity or sellout quantity', 'warning', 'No Products');
+    showToast(i18next.t('noProducts'), 'warning', i18next.t('noProductsTitle'));
     return;
   }
   
   // Show confirmation modal
   const modalSummary = document.getElementById('modalSummary');
   modalSummary.innerHTML = `
-    <p><strong>Order Summary:</strong></p>
+    <p><strong>${i18next.t('orderSummary')}:</strong></p>
     <ul>
-      <li>Week: ${elements.weekSelect.value}</li>
-      <li>Channel: ${elements.channelSelect.value}</li>
-      <li>Salesman: ${elements.salesmanSelect.value}</li>
-      <li>Customer: ${elements.customerSelect.value}</li>
-      <li>Products: ${orderData.length} items</li>
-      <li>Total Quantity: ${orderData.reduce((sum, item) => sum + item.qty, 0)}</li>
-      <li>Total Sellout: ${orderData.reduce((sum, item) => sum + item.sellout, 0)}</li>
+      <li>${i18next.t('week')}: ${elements.weekSelect.value}</li>
+      <li>${i18next.t('channel')}: ${elements.channelSelect.value}</li>
+      <li>${i18next.t('salesman')}: ${elements.salesmanSelect.value}</li>
+      <li>${i18next.t('customer')}: ${elements.customerSelect.value}</li>
+      <li>${i18next.t('productsStat')}: ${orderData.length}</li>
+      <li>${i18next.t('totalQty')}: ${orderData.reduce((sum, item) => sum + item.qty, 0)}</li>
+      <li>${i18next.t('selloutQty')}: ${orderData.reduce((sum, item) => sum + item.sellout, 0)}</li>
     </ul>
   `;
   
@@ -779,38 +967,41 @@ async function confirmSubmit() {
     // Close modal and show loading
     closeModal();
     elements.submitBtn.disabled = true;
-    elements.submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+    elements.submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${i18next.t('submitting')}`;
     
     const orderData = collectOrderData();
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(orderData));
-    
+
     const response = await fetch("https://script.google.com/macros/s/AKfycbwTTKahHaWxeODCJ2SmXMXxpRJfh9zeWHJjuEgLc4ZkMovWk-VZ3xiszTEUBFRlD1RZMg/exec", {
       method: "POST",
-      body: formData
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(orderData)
     });
-    
-    const result = await response.json();
-    
-    if (result.status === "success") {
-      showToast('Order submitted successfully!', 'success', 'Success');
-      
-      // Clear saved data
-      localStorage.removeItem('stockInTradeFormData');
-      
-resetForm(); // ✅ Instantly reset the form after success
-      
-    } else {
-      throw new Error(result.message || 'Submission failed');
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
     }
+
+    const result = await response.json();
+    if (result.status !== "success") {
+      throw new Error(result.message || "Unknown error");
+    }
+
+    showToast(i18next.t('submitSuccess'), 'success', i18next.t('success'));
+
+    // Clear saved data
+    localStorage.removeItem('stockInTradeFormData');
+
+    resetForm(false); // Instantly reset the form after success without confirmation
     
   } catch (error) {
     console.error('Submission error:', error);
-    showToast(`Submission failed: ${error.message}`, 'error', 'Submission Error');
+    showToast(`${i18next.t('submitFailed')}: ${error.message}`, 'error', i18next.t('submissionError'));
     
   } finally {
     elements.submitBtn.disabled = false;
-    elements.submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Order';
+    elements.submitBtn.innerHTML = `<i class="fas fa-paper-plane"></i> <span data-i18n="submitOrder">${i18next.t('submitOrder')}</span>`;
   }
 }
 
@@ -860,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initialize progress
     updateProgress();
     
-    showToast('Application loaded successfully', 'success');
+    showToast(i18next.t('appLoaded'), 'success');
     
     // Add manual test functionality
     window.testFormState = () => {
@@ -876,7 +1067,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
   } catch (error) {
     console.error('Initialization error:', error);
-    showToast('Failed to initialize application. Please refresh the page.', 'error', 'Initialization Error');
+    showToast(i18next.t('initError'), 'error', i18next.t('initErrorTitle'));
     elements.loadingOverlay.classList.add('hidden');
   }
 });
