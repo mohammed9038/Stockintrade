@@ -181,6 +181,11 @@ const resources = {
   }
 };
 
+// Google Apps Script endpoint and CORS proxy
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTTKahHaWxeODCJ2SmXMXxpRJfh9zeWHJjuEgLc4ZkMovWk-VZ3xiszTEUBFRlD1RZMg/exec';
+const CORS_PROXY = 'https://corsproxy.io/?';
+const PROXIED_SCRIPT_URL = `${CORS_PROXY}${encodeURIComponent(GOOGLE_SCRIPT_URL)}`;
+
 function updateTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
@@ -971,7 +976,7 @@ async function confirmSubmit() {
     
     const orderData = collectOrderData();
 
-    const response = await fetch("https://script.google.com/macros/s/AKfycbwTTKahHaWxeODCJ2SmXMXxpRJfh9zeWHJjuEgLc4ZkMovWk-VZ3xiszTEUBFRlD1RZMg/exec", {
+    const response = await fetch(PROXIED_SCRIPT_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

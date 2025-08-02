@@ -2,6 +2,10 @@ const channelSelect = document.getElementById("channel");
 const salesmanSelect = document.getElementById("salesman");
 const customerSelect = document.getElementById("customer");
 
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTTKahHaWxeODCJ2SmXMXxpRJfh9zeWHJjuEgLc4ZkMovWk-VZ3xiszTEUBFRlD1RZMg/exec';
+const CORS_PROXY = 'https://corsproxy.io/?';
+const PROXIED_SCRIPT_URL = `${CORS_PROXY}${encodeURIComponent(GOOGLE_SCRIPT_URL)}`;
+
 function loadDropdowns() {
   fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vREXfVVJ4zYuYx40MkvrBI8aH2OYr81ZlF2b_owlbT1o_RhXC44_egEmLCOiLrD5iVPo-CAuYRrVqIC/pub?gid=1284241246&single=true&output=csv")
     .then(res => res.text())
@@ -135,7 +139,7 @@ function submitForm() {
   const formData = new FormData();
   formData.append("data", JSON.stringify(entries));
 
-  fetch("https://script.google.com/macros/s/AKfycbwTTKahHaWxeODCJ2SmXMXxpRJfh9zeWHJjuEgLc4ZkMovWk-VZ3xiszTEUBFRlD1RZMg/exec", {
+  fetch(PROXIED_SCRIPT_URL, {
     method: "POST",
     body: formData
   })
