@@ -625,34 +625,39 @@ function collapseAll() {
   });
 }
 
-function resetForm() {
-  if (confirm('Are you sure you want to reset the form? All data will be lost.')) {
-    // Reset form fields
-    elements.weekSelect.value = '';
-    elements.channelSelect.value = '';
-    elements.salesmanSelect.innerHTML = '<option value="">-- Select Salesman --</option>';
-    elements.customerSelect.innerHTML = '<option value="">-- Select Customer --</option>';
-    
-    // Reset product quantities
-    appState.productQuantities = {};
-    
-    // Reset product inputs
-    document.querySelectorAll('.product-input').forEach(input => {
-      input.value = '';
-    });
-    
-    // Remove visual states
-    document.querySelectorAll('.product.has-quantity').forEach(product => {
-      product.classList.remove('has-quantity');
-    });
-    
-    // Clear saved data
-    localStorage.removeItem('stockInTradeFormData');
-    
-    // Update UI
-    updateProgress();
-    showToast('Form reset successfully', 'success');
+function resetForm(confirmReset = true) {
+  if (confirmReset) {
+    const proceed = confirm('Are you sure you want to reset the form? All data will be lost.');
+    if (!proceed) {
+      return;
+    }
   }
+
+  // Reset form fields
+  elements.weekSelect.value = '';
+  elements.channelSelect.value = '';
+  elements.salesmanSelect.innerHTML = '<option value="">-- Select Salesman --</option>';
+  elements.customerSelect.innerHTML = '<option value="">-- Select Customer --</option>';
+
+  // Reset product quantities
+  appState.productQuantities = {};
+
+  // Reset product inputs
+  document.querySelectorAll('.product-input').forEach(input => {
+    input.value = '';
+  });
+
+  // Remove visual states
+  document.querySelectorAll('.product.has-quantity').forEach(product => {
+    product.classList.remove('has-quantity');
+  });
+
+  // Clear saved data
+  localStorage.removeItem('stockInTradeFormData');
+
+  // Update UI
+  updateProgress();
+  showToast('Form reset successfully', 'success');
 }
 
 // Preview Functions
@@ -789,17 +794,21 @@ async function confirmSubmit() {
       method: "POST",
       body: formData
     });
-    
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
     const result = await response.json();
-    
+
     if (result.status === "success") {
       showToast('Order submitted successfully!', 'success', 'Success');
-      
+
       // Clear saved data
       localStorage.removeItem('stockInTradeFormData');
-      
-resetForm(); // ✅ Instantly reset the form after success
-      
+
+      resetForm(false); // ✅ Instantly reset the form after success without confirmation
+
     } else {
       throw new Error(result.message || 'Submission failed');
     }
